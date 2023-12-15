@@ -1,0 +1,23 @@
+{
+  "name": "lms_server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "backend for learning management system",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+     "dev":"nodemon server.js",
+     "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Himanshu4313/LMS_Server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Himanshu4313/LMS_Server/issues"
+  },
+  "homepage": "https://github.com/Himanshu4313/LMS_Server#readme"
+}
