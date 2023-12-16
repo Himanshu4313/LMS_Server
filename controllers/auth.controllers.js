@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import emailValid from 'email-validator';
 //function for user registeration
 export const getRegisteration = async (req , res ) =>{
-          const {fullName , email , password , } = req.body;
+          const {fullName , email , password , avatar } = req.body;
 
           if(!fullName || !email || !password){
                 return res
@@ -11,7 +11,7 @@ export const getRegisteration = async (req , res ) =>{
                 .json({message : "All fields are mandatory"})
           }
           
-          if(!emailValid.validate(this.email)){
+          if(!emailValid.validate(email)){
               return res.status(400).json({success:false,message:"Please enter correct email"})
           }
           try {
@@ -27,20 +27,35 @@ export const getRegisteration = async (req , res ) =>{
                })
             }
   
-           const newUser =await userModel.create({
+           const newUser = await userModel.create({
                  fullName,
                  email,
-                 password
+                 password,
+                 avatar:{
+                    public_id:email,
+                    secure_url:avatar,
+                 },
             })
+           
+            //this code will run when above create function is not working
+            if(!newUser){
+                res.status(400).json({success:false , message:"User registration failed please try again"})
+            }
 
-            const token = newUser.generateJWTToken();
+            //TODO file upload 
 
+            // await newUser.save();
+
+            // console.log(newUser);
+            const token = await newUser.generateJWTToken();
+            // console.log(token);
             newUser.password = undefined;
 
             const cookieOption = {
-                maxAge : 24 * 60 * 60 * 1000,
-                httpOnly:true
-            }
+                maxAge : 7 * 24 * 60 * 60 * 1000,//7day
+                httpOnly:true,
+                secure:true
+            };
             res.cookie("token" , token , cookieOption);
             res.status(200).json({
                 success:true,
@@ -49,11 +64,13 @@ export const getRegisteration = async (req , res ) =>{
             })
   
           } catch (error) {
+            console.log(error);
                return res
                .status(500)
                .json({
                    success:false,
-                   message:"Failed to register"
+                   message:"Failed to register",
+                   error:error
                })
           }
          
@@ -68,7 +85,7 @@ export const loggedIn = async (req , res ) =>{
                    message:"All fields are required"
               })
            }
-           if(!emailValid.validate(this.email)){
+           if(!emailValid.validate(email)){
                return  res.status(400).json({
                 success:false,
                 message:"Please enter correct email address",
@@ -76,9 +93,9 @@ export const loggedIn = async (req , res ) =>{
            }
             try {
                 
-                const userExists = await userModel.findOne({email}).select('+password');
-     
-                if(!userExists || !userExists.password){
+               const userExists = await userModel.findOne({email}).select('+password');
+               console.log(userExists);
+                if(!userExists){
                     return res.status(400).json({success:false , message:"User does not exists"});
                 }
      
@@ -89,19 +106,20 @@ export const loggedIn = async (req , res ) =>{
      
                 //if all condition are true then
                 
-                const token = userExists.generateJWTToken();
+                const token = await userExists.generateJWTToken();
      
                 userExists.password = undefined;
      
                 const cookieOption = {
-                    maxAge : 24 * 60 * 60 * 1000,
-                    httpOnly:true
+                    maxAge : 7 * 24 * 60 * 60 * 1000, // 7 days
+                    httpOnly:true,
+                    secure:true
                 }
                 res.cookie("token" , token , cookieOption);
                 res.status(200).json({
                     success:true,
                     message:"User login sucessfully",
-                    data: newUser
+                    data: userExists
                 })
             } catch (error) {
                   return res.status(500).json({
@@ -117,7 +135,9 @@ export const logout = (req , res) =>{
           try {
               const cookieOption ={
                  expires:new Date(),
-                 httpOnly:true              
+                 httpOnly:true,  
+                 maxAge:0,
+                 secure:true            
                 }
                 res.cookie("token",null,cookieOption);
                 res.status(200).json({success:true,message:"Logout Successfully"});
@@ -127,8 +147,8 @@ export const logout = (req , res) =>{
 }
 //function for get user information
 export const getUserInfo = async (req , res) =>{
-    const userID = req.user.id;
     try{
+        const userID = req.user.id;
         const userInfo = await userModel.findById(userID);
         res.status(200).json({
             success:true,
@@ -136,7 +156,7 @@ export const getUserInfo = async (req , res) =>{
             data:userInfo
         })
     }catch(error){
-        return res.status(400).json({success:false , message:error.message})
+        return res.status(400).json({success:false , message:"Failed to fetch user details",error:error.message})
     }
 
 }
