@@ -58,11 +58,16 @@ userSchema.pre('save', async (next) =>{
 // jwtToken generating function
 userSchema.methods = {
     generateJWTToken() {
-           return JWT.sign(
-             {id : this._id , email: this.email , role : this.role },
-              process.env.SECRET,
-             { ExpiresIn : '24h'}
-            )
+           try {
+               return JWT.sign(
+                 {id : this._id , email: this.email , role : this.role },
+                  process.env.SECRET,
+                 { ExpiresIn : '24h'}
+                )
+            
+           } catch (error) {
+                throw new Error("Failed to generate token");
+           }
     }
 }
 
