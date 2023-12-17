@@ -3,25 +3,32 @@
 ## E-Learning Platform Backend
 
 ## Overview
+
 Welcome to the backend of our dynamic e-learning platform, powered by Node.js and Express.js, and supported by MongoDB for seamless data management.
 
 ## Technologies Used
-Node.js: A JavaScript runtime for building scalable network applications.
-Express.js: A web application framework for Node.js, designed for building robust APIs.
-MongoDB: A NoSQL database for storing and retrieving data efficiently.
+
+1. Node.js: A JavaScript runtime for building scalable network applications.
+2. Express.js: A web application framework for Node.js, designed for building robust APIs.
+3. MongoDB: A NoSQL database for storing and retrieving data efficiently.
 
 ## Dependencies
-Before you start, ensure the following dependencies are installed on your machine:
+
+ Before you start, ensure the following dependencies are installed on your machine:
 
 1. Node.js
 2. npm (Node Package Manager)
 3. MongoDB
+
 ## Getting Started
+
 Prerequisites
+
 ```
 Install Node.js.
 Install npm.
 Install and run MongoDB.
+
 ```
 ## Installation
 Copy code
