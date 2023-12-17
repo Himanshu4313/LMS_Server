@@ -28,7 +28,7 @@ app.use(cookieParser())
 app.use(morgan('dev'))
 
 // All routes here 
-app.use('/api/v1/auth',authRouter);
+app.use('/api/v1/user',authRouter);
 
 app.get('/',(req , res)=>{
        res.status(200).json({Message:"Welcome to LMS backend"});

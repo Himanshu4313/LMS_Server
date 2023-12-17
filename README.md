@@ -32,7 +32,7 @@ Install and run MongoDB.
 ```
 ## Installation
 Copy code
-git clone [https://github.com/your-username/your-repo.git]
+git clone [https://github.com/Himanshu4313/LMS_Server.git]
 ```
 cd your-repo
 npm install

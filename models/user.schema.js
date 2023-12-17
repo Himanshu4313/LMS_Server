@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
 import {config} from 'dotenv';
+import crypto from 'crypto';
+import { networkInterfaces } from "os";
 config();
 const Schema = mongoose.Schema;
 
@@ -81,6 +83,22 @@ userSchema.methods = {
       throw new Error("Failed to generate token");
     }
   },
+   
+  //This token is generate for forgot password
+  generateJWTResetToken(){
+      const resetToken =  crypto.randomBytes(20).toString("hex");
+
+      //if resetToken is generate then we assign this token in forgotPasswordToken that is mention in userSchema.
+      this.forgotPasswordToken = crypto 
+      .createHash('sha256')
+      .update(resetToken)
+      .digest('hex');
+
+      this.forgotPasswordExpiry = Date.now() + 15 * 60 * 1000; //15 min from now
+
+      return resetToken;
+     
+  }
 };
 
 const userModel = mongoose.model("user", userSchema);
