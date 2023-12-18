@@ -12,7 +12,7 @@ authRouter.post('/login',loggedIn);
 authRouter.get('/logout',authJWT,logout);
 authRouter.get('/me',authJWT,getUserInfo);
 authRouter.post('/forgot-password',forgotPassword);
-authRouter.post('/reste-password',resetPassword);
+authRouter.post('/reset-password/:resetToken',resetPassword);
 authRouter.post('/change-password',authJWT,changePassword);
 authRouter.put('/update',authJWT,upload.single('avatar'),updateProfile)
 

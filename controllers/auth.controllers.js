@@ -4,6 +4,7 @@ import emailValid from "email-validator";
 import cloudinary from "cloudinary";
 import fs from "fs/promises";
 import crypto from "crypto";
+import sendEmail from '../utils/send.email.js';
 //function for user registeration
 export const getRegisteration = async (req, res) => {
   const { fullName, email, password, avatar } = req.body;
@@ -238,7 +239,7 @@ export const forgotPassword = async (req, res) => {
     User.forgotPasswordToken = undefined;
     User.forgotPasswordExpiry = undefined;
     await User.save();
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error });
   }
 };
 //function for reset password
@@ -256,7 +257,7 @@ export const resetPassword = async (req, res) => {
     const forgotPasswordToken = crypto
       .createHash("sha256")
       .update(resetToken)
-      .digest("hax");
+      .digest("hex");
 
     const user = await userModel.findOne({
       forgotPasswordToken,
@@ -276,6 +277,7 @@ export const resetPassword = async (req, res) => {
     user.password = password;
     user.forgotPasswordExpiry = undefined;
     user.forgotPasswordExpiry = undefined;
+
     await user.save();
 
     res.status(200).json({
@@ -301,12 +303,12 @@ export const changePassword = async (req, res) => {
   }
 
   //    // then check the given old password is correct or not
-  //    const oldPasswordhax = await bcrypt.hash(oldPassword , 10); // convert row password into hash because password store in database as hash form.
+  //  const oldPasswordhax = await bcrypt.hash(oldPassword , 10); // convert row password into hash because password store in database as hash form.
   try {
     const user = await userModel.findById(id).select("+password");
-
-     const isvalidPassword  = await  user.comparePassword(oldPassword);
-    if (!isvalidPassword) {
+    
+     
+    if (!await bcrypt.compare(oldPassword,user.password)) {
       return res
         .status(400)
         .json({
@@ -330,12 +332,10 @@ export const changePassword = async (req, res) => {
 // function for user updateProfile 
 
 export const updateProfile =  async (req , res) =>{
-        const {fullName} = req.body;
-        const {id} = req.user;
+        const { fullName } = req.body;
+        const { id } = req.user;
 
-         if(!fullName){
-            return res.staus(400).json({success:false , message:"Name field are required"});
-         }
+         
          try {
             
              const userExists = await userModel.findById(id);
@@ -378,7 +378,7 @@ export const updateProfile =  async (req , res) =>{
              }
      
              // if any one change 
-             await userExists.use();
+             await userExists.save();
              res.status(200).json({success:true,message:"User profile updated sucessfully"});
          } catch (error) {
             return res.status(500).json({success:false , message:"Failed update your profile.Please try again"})
