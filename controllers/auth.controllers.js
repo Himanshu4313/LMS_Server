@@ -147,7 +147,7 @@ export const loggedIn = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "User login sucessfully",
-      data: userExists,
+      user: userExists,
     });
   } catch (error) {
     return res.status(500).json({
@@ -186,7 +186,7 @@ export const getUserInfo = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "successfully",
-      data: userInfo,
+      user: userInfo,
     });
   } catch (error) {
     return res
