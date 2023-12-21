@@ -8,6 +8,7 @@ import cors from "cors";
 //import database connection file
 import connectToDB from "./configs/connect.database.js";
 import authRouter from "./routes/auth.routes.js";
+import courseRouter from './routes/course.routes.js';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 //create instance of express
@@ -29,6 +30,8 @@ app.use(morgan('dev'))
 
 // All routes here 
 app.use('/api/v1/user',authRouter); // for auth route
+
+app.use('/api/v1/courses',courseRouter); //for course route
  
 app.get('/',(req , res)=>{
        res.status(200).json({Message:"Welcome to LMS backend"});
