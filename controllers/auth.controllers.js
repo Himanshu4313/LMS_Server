@@ -186,7 +186,7 @@ export const getUserInfo = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "successfully",
-      user: userInfo,
+      data: userInfo,
     });
   } catch (error) {
     return res
@@ -377,7 +377,7 @@ export const updateProfile =  async (req , res) =>{
                    }
              }
      
-             // if any one change 
+             // if any one change or both
              await userExists.save();
              res.status(200).json({success:true,message:"User profile updated sucessfully"});
          } catch (error) {
