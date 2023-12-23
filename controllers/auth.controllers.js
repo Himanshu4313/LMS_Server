@@ -4,7 +4,7 @@ import emailValid from "email-validator";
 import cloudinary from "cloudinary";
 import fs from "fs/promises";
 import crypto from "crypto";
-import sendEmail from '../utils/send.email.js';
+import sendEmail from "../utils/send.email.js";
 //function for user registeration
 export const getRegisteration = async (req, res) => {
   const { fullName, email, password, avatar } = req.body;
@@ -40,12 +40,10 @@ export const getRegisteration = async (req, res) => {
 
     //this code will run when above create function is not working
     if (!newUser) {
-      res
-        .status(400)
-        .json({
-          success: false,
-          message: "User registration failed please try again",
-        });
+      res.status(400).json({
+        success: false,
+        message: "User registration failed please try again",
+      });
     }
 
     // upload file in cloudinary
@@ -169,13 +167,11 @@ export const logout = (req, res) => {
     res.cookie("token", null, cookieOption);
     res.status(200).json({ success: true, message: "Logout Successfully" });
   } catch (error) {
-    res
-      .status(400)
-      .status({
-        success: false,
-        message: "failed to logout",
-        error: error.message,
-      });
+    res.status(400).status({
+      success: false,
+      message: "failed to logout",
+      error: error.message,
+    });
   }
 };
 //function for get user information
@@ -189,13 +185,11 @@ export const getUserInfo = async (req, res) => {
       data: userInfo,
     });
   } catch (error) {
-    return res
-      .status(400)
-      .json({
-        success: false,
-        message: "Failed to fetch user details",
-        error: error.message,
-      });
+    return res.status(400).json({
+      success: false,
+      message: "Failed to fetch user details",
+      error: error.message,
+    });
   }
 };
 
@@ -265,13 +259,11 @@ export const resetPassword = async (req, res) => {
     });
 
     if (!user) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message:
-            "User does not exist with same token or token is expires.please try again",
-        });
+      return res.status(400).json({
+        success: false,
+        message:
+          "User does not exist with same token or token is expires.please try again",
+      });
     }
 
     user.password = password;
@@ -306,15 +298,12 @@ export const changePassword = async (req, res) => {
   //  const oldPasswordhax = await bcrypt.hash(oldPassword , 10); // convert row password into hash because password store in database as hash form.
   try {
     const user = await userModel.findById(id).select("+password");
-    
-     
-    if (!await bcrypt.compare(oldPassword,user.password)) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Your oldPassword is incorrect.Please try again",
-        });
+
+    if (!(await bcrypt.compare(oldPassword, user.password))) {
+      return res.status(400).json({
+        success: false,
+        message: "Your oldPassword is incorrect.Please try again",
+      });
     }
 
     user.password = newPassword;
@@ -329,58 +318,63 @@ export const changePassword = async (req, res) => {
   }
 };
 
-// function for user updateProfile 
+// function for user updateProfile
 
-export const updateProfile =  async (req , res) =>{
-        const { fullName } = req.body;
-        const { id } = req.user;
+export const updateProfile = async (req, res) => {
+  const { fullName } = req.body;
+  const { id } = req.user;
 
-         
-         try {
-            
-             const userExists = await userModel.findById(id);
-     
-             if(!userExists){
-                 return res.status(400).json({success:false , message : "User does not exists"});
-             }
-     
-              if(fullName){
-              userExists.fullName = fullName;
-              }
-     
-             // this is run when user can change profile photo
-     
-             // first we destroy securl url from cloudinary
-             await cloudinary.v2.uploader.destroy(userExists.avatar.public_id);
-             if(req.file){
-                 try {
-                     const result = await cloudinary.v2.uploader.upload(req.file.path, {
-                       folder: "lms",
-                       width: 250,
-                       height: 250,
-                       gravity: "faces",
-                       crop: "fill",
-                     });
-             
-                     if (result) {
-                         userExists.avatar.public_id = result.public_id;
-                         userExists.avatar.secure_url = result.secure_url;
-                     }
-                     fs.rm(`uploads/${req.file.filename}`);
-                   } catch (error) {
-                     //  throw new Error(error)
-                     res.status(500).json({
-                       success: false,
-                       message: "File not uploaded , Please try again",
-                       error,
-                     });
-                   }
-             }
-     
-             // if any one change or both
-             await userExists.save();
-             res.status(200).json({success:true,message:"User profile updated sucessfully"});
-         } catch (error) {
-            return res.status(500).json({success:false , message:"Failed update your profile.Please try again"})
-         }
-}
+  try {
+    const userExists = await userModel.findById(id);
+
+    if (!userExists) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User does not exists" });
+    }
+
+    if (fullName) {
+      userExists.fullName = fullName;
+    }
+
+    // this is run when user can change profile photo
+
+    // first we destroy securl url from cloudinary
+    await cloudinary.v2.uploader.destroy(userExists.avatar.public_id);
+    if (req.file) {
+      try {
+        const result = await cloudinary.v2.uploader.upload(req.file.path, {
+          folder: "lms",
+          width: 250,
+          height: 250,
+          gravity: "faces",
+          crop: "fill",
+        });
+
+        if (result) {
+          userExists.avatar.public_id = result.public_id;
+          userExists.avatar.secure_url = result.secure_url;
+        }
+        fs.rm(`uploads/${req.file.filename}`);
+      } catch (error) {
+        //  throw new Error(error)
+        res.status(500).json({
+          success: false,
+          message: "File not uploaded , Please try again",
+          error,
+        });
+      }
+    }
+
+    // if any one change or both
+    await userExists.save();
+    res
+      .status(200)
+      .json({ success: true, message: "User profile updated sucessfully" });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed update your profile.Please try again",
+    });
+  }
+};

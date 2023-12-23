@@ -5,7 +5,10 @@ const authJWT = async (req, res, next) => {
   if (!token) {
     return res
       .status(400)
-      .json({ success: false, message: "NOT Autherized user , Please loggedIn" });
+      .json({
+        success: false,
+        message: "NOT Autherized user , Please loggedIn",
+      });
   }
 
   //verfiy existing token
@@ -22,7 +25,3 @@ const authJWT = async (req, res, next) => {
   }
 };
 export default authJWT;
-
-
-
-

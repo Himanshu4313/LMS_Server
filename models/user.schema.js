@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
-import {config} from 'dotenv';
-import crypto from 'crypto';
+import { config } from "dotenv";
+import crypto from "crypto";
 import { networkInterfaces } from "os";
 config();
 const Schema = mongoose.Schema;
@@ -43,12 +43,12 @@ const userSchema = new Schema(
       enum: ["USER", "ADMIN"],
       default: "USER",
     },
-    forgotPasswordToken: { 
-      type:String 
+    forgotPasswordToken: {
+      type: String,
     },
-    forgotPasswordExpiry: { 
-     type: Date
-     },
+    forgotPasswordExpiry: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
@@ -69,7 +69,7 @@ userSchema.pre("save", async function (next) {
 userSchema.methods = {
   generateJWTToken() {
     try {
-        // This sign function take three argument sign({data},secretKey , {expiresIn:"24h"})
+      // This sign function take three argument sign({data},secretKey , {expiresIn:"24h"})
       return JWT.sign(
         {
           id: this._id,
@@ -79,30 +79,29 @@ userSchema.methods = {
         },
         process.env.SECRET,
         {
-          expiresIn: 7 * 24 * 60 * 60 * 1000
+          expiresIn: 7 * 24 * 60 * 60 * 1000,
         }
       );
     } catch (error) {
-        console.log('JWT generating ',error);
+      console.log("JWT generating ", error);
       throw new Error("Failed to generate token");
     }
   },
-   
+
   //This token is generate for forgot password
-  generateJWTResetToken(){
-      const resetToken =  crypto.randomBytes(20).toString("hex");
+  generateJWTResetToken() {
+    const resetToken = crypto.randomBytes(20).toString("hex");
 
-      //if resetToken is generate then we assign this token in forgotPasswordToken that is mention in userSchema.
-      this.forgotPasswordToken = crypto 
-      .createHash('sha256')
+    //if resetToken is generate then we assign this token in forgotPasswordToken that is mention in userSchema.
+    this.forgotPasswordToken = crypto
+      .createHash("sha256")
       .update(resetToken)
-      .digest('hex');
+      .digest("hex");
 
-      this.forgotPasswordExpiry = Date.now() + 15 * 60 * 1000; //15 min from now
+    this.forgotPasswordExpiry = Date.now() + 15 * 60 * 1000; //15 min from now
 
-      return resetToken;
-     
-  }
+    return resetToken;
+  },
 };
 
 const userModel = mongoose.model("user", userSchema);
