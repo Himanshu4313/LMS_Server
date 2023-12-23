@@ -233,7 +233,7 @@ export const forgotPassword = async (req, res) => {
     User.forgotPasswordToken = undefined;
     User.forgotPasswordExpiry = undefined;
     await User.save();
-    return res.status(500).json({ success: false, message: error });
+    res.status(500).json({ success: false, message: error });
   }
 };
 //function for reset password
@@ -368,9 +368,7 @@ export const updateProfile = async (req, res) => {
 
     // if any one change or both
     await userExists.save();
-    res
-      .status(200)
-      .json({ success: true, message: "User profile updated sucessfully" });
+   res.status(200).json({ success: true, message: "User profile updated sucessfully" });
   } catch (error) {
     return res.status(500).json({
       success: false,

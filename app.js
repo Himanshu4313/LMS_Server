@@ -11,6 +11,7 @@ import authRouter from "./routes/auth.routes.js";
 import courseRouter from './routes/course.routes.js';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
+import ContactUsRoutes from "./routes/contactUs.routes.js";
 //create instance of express
 const app = express();
 
@@ -32,6 +33,9 @@ app.use(morgan('dev'))
 app.use('/api/v1/user',authRouter); // for auth route
 
 app.use('/api/v1/courses',courseRouter); //for course route
+
+
+app.use('/api/v1/contact',ContactUsRoutes);// for contact us 
  
 app.get('/',(req , res)=>{
        res.status(200).json({Message:"Welcome to LMS backend"});

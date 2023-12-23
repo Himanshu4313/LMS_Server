@@ -5,8 +5,8 @@ import fs from "fs/promises";
 // controller for get all courses
 export const getAllCourses = async (req, res) => {
   try {
-    const course = await Course.find({}).select("-lectures");
-    if (!course) {
+    const courses = await Course.find({}).select("-lectures");
+    if (!courses) {
       return res.status(400).json({
         success: false,
         message: "Something went wrong!!.No course are Exists",
@@ -16,7 +16,7 @@ export const getAllCourses = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Successfully fetch courses",
-      course,
+      courses,
     });
   } catch (error) {
     return res.status(500).json({
