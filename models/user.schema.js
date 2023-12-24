@@ -49,6 +49,10 @@ const userSchema = new Schema(
     forgotPasswordExpiry: {
       type: Date,
     },
+    subscription:{
+           id:String,
+           status:String
+    }
   },
   {
     timestamps: true,
@@ -79,7 +83,7 @@ userSchema.methods = {
         },
         process.env.SECRET,
         {
-          expiresIn: 7 * 24 * 60 * 60 * 1000,
+          expiresIn: 7 * 24 * 60 * 60 * 1000, //7day
         }
       );
     } catch (error) {
