@@ -21,7 +21,7 @@ export const razorpay = new Razorpay({
     key_id:process.env.RAZORPAY_API_KEY,
     key_secret:process.env.RAZORPAY_SECRECT
 })
-
+// console.log('Authentication of razorpay',razorpay.subscriptions.create);
 //app is listen or server is running 
 app.listen(PORT , () =>{
     console.log(`Server is runnig at http://localhost:${PORT}`);
