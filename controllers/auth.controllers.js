@@ -133,7 +133,7 @@ export const loggedIn = async (req, res) => {
     //if all condition are true then
 
     const token = await userExists.generateJWTToken();
-
+    console.log('tokens',token);
     userExists.password = undefined;
 
     const cookieOption = {
