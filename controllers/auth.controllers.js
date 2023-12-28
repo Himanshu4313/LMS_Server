@@ -82,6 +82,7 @@ export const getRegisteration = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, //7day
       httpOnly: true,
       secure: true,
+      sameSite:'None'
     };
     res.cookie("token", token, cookieOption);
     res.status(200).json({
@@ -140,6 +141,7 @@ export const loggedIn = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       httpOnly: true,
       secure: true,
+      sameSite:'None'
     };
     res.cookie("token", token, cookieOption);
     res.status(200).json({
@@ -163,6 +165,7 @@ export const logout = (req, res) => {
       httpOnly: true,
       maxAge: 0,
       secure: true,
+      sameSite:'None'
     };
     res.cookie("token", null, cookieOption);
     res.status(200).json({ success: true, message: "Logout Successfully" });
