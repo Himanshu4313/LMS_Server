@@ -207,6 +207,7 @@ export const addLecturesByCourseId = async (req, res) => {
       try {
         const result = await cloudinary.v2.uploader.upload(req.file.path, {
           folder: "lms",
+          resource_type:"auto",
         });
         // console.log(result)
         if (result) {
